@@ -1,0 +1,13 @@
+{
+  "firefox_install" : "true",
+  "sevenzip_install" :  "true",
+  "chrome_install" : "true",
+  "npp_install" : "true",
+  "npp_desktop" : "true",
+  "citavi_install" : "true",
+  "thunderbird_install" : "true",
+  "keepassxc_install" : "true",
+  "pdf24_install" : "true",
+  "vlc_install" : "true",
+  "greenshot_install" : "true"
+}
