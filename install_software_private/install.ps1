@@ -104,6 +104,11 @@ $start_ins_button.Location = New-Object System.Drawing.Size(280,275)
 $start_ins_button.Size = New-Object System.Drawing.Size(100,25)
 $start_ins_button.Text = "Start Installation"
 $start_ins_button.Name = "Start Installation"
+#ok button make flatstyle
+$start_ins_button.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+$start_ins_button.FlatAppearance.BorderSize = 1
+$start_ins_button.FlatAppearance.BorderColor = [System.Drawing.Color]::DarkSlateGray
+$start_ins_button.FlatAppearance.MouseOverBackColor = [System.Drawing.Color]::LightSkyBlue
 #start button function
 $start_ins_button.Add_Click(
     {start_install(
@@ -131,6 +136,11 @@ $cancel_button.Size = New-Object System.Drawing.Size(75,25)
 $cancel_button.Text = "Abbrechen"
 $cancel_button.Name = "Abbrechen"
 $cancel_button.DialogResult = "Cancel"
+#ok button make flatstyle
+$cancel_button.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+$cancel_button.FlatAppearance.BorderSize = 1
+$cancel_button.FlatAppearance.BorderColor = [System.Drawing.Color]::DarkSlateGray
+$cancel_button.FlatAppearance.MouseOverBackColor = [System.Drawing.Color]::LightPink
 #cancel button function
 $cancel_button.Add_Click({$objForm.Close()})
 $objForm.Controls.Add($cancel_button)
@@ -152,7 +162,6 @@ $objForm.Controls.AddRange(@(
 
 #open window
 [void] $objForm.ShowDialog()
-
 function start_install {
     param ()
     if ($check_7zip.Checked -eq $true) {
@@ -194,10 +203,10 @@ function start_install {
     if ($check_thunderbird.Checked -eq $true) {
         Write-Host "Thunderbird installation startet ..."
         install_thunderbird
-    }     
+    }   
 }
 function install_7zip {
-    
+
 }
 function install_battlenet {
     
