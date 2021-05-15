@@ -19,7 +19,7 @@ $objForm.FormBorderStyle = 'FixedDialog'
 
 $info_text = New-Object System.Windows.Forms.Label
 $info_text.location = '20,20'
-$info_text.text = "Which Software you want to install?"
+$info_text.text = "Which Software do you want to install?"
 $info_text.AutoSize = $true
 $objForm.Controls.Add($info_text)
 
@@ -165,9 +165,9 @@ $start_ins_button.Add_Click(
         $check_steam.Checked, 
         $check_thunderbird.Checked,
         $check_vlc.Checked,
-        $check_teamviewer,
-        $check_pdf24,
-        $check_obs
+        $check_teamviewer.Checked,
+        $check_pdf24.Checked,
+        $check_obs.Checked
     ) 
     $objForm.Close()
     }
@@ -255,6 +255,12 @@ function start_install {
     if ($check_obs.Checked -eq $true) {
         install_obs
     }
+    
+    # Information for the user for some products
+    if ($check_battlenet.Checked -eq $true) {
+        [System.Windows.MessageBox]::Show("Battle.Net cant be installed automaticaly because Blizzard does NOT support this option.`n`nYou have to install Battel.Net manually","Information about Battle.Net","OK","Information")
+    }
+
 }
 function install_7zip {
     Write-Host "7-Zip installation startet ..."
@@ -274,26 +280,100 @@ function install_7zip {
     (New-Object System.Net.WebClient).DownloadFile($7zip_download_path,"$scriptfolder\$7zip_installer_file")
 
     #start installation of 7zip
-    #Start-Process -FilePath "msiexec.exe" -ArgumentList "/i ""$ScriptFolder\$7zip_installer_file"" /qn /norestart" -Wait -WindowStyle Hidden
+    Start-Process -FilePath "msiexec.exe" -ArgumentList "/i ""$ScriptFolder\$7zip_installer_file"" /qn /norestart" -Wait -WindowStyle Hidden
     Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$7zip_installer_file"
 }
 function install_battlenet {
     Write-Host "Battle.Net installation startet ..."
+
+    #set variables
+    $discord_installer_file = "battlenet.exe"
+    $discord_download_path = "https://eu.battle.net/download/getInstaller?os=win&installer=Battle.net-Setup.exe"
+
+    #downloading the newest discord version
+    (New-Object System.Net.WebClient).DownloadFile($discord_download_path,"$scriptfolder\$discord_installer_file")
 }
 function install_chrome {
     Write-Host "Google Crome installation startet ..."
+
+    #set links for chrome download
+    $chrome_version_url = "https://npackd.appspot.com/p/google-chrome-x64"
+    $chrome_newest_version = (((((Invoke-RestMethod -Uri $chrome_version_url) -split "Versions:")[1] -split "</a>")[0] -split "<a href=`"/p/google-chrome-x64/")[1] -split "`">")[0]
+    $chrome_dl_newversion_url = $chrome_version_url + "/" + $chrome_newest_version
+    $chrome_download_path = ((((Invoke-RestMethod -Uri $chrome_dl_newversion_url) -split "Download:")[1] -split "`"")[1] -split "`"")[0]
+    $chrome_installer_file = ($chrome_download_path -split "/")[-1]
+
+    #start download of the newest libreoffice version
+    (New-Object System.Net.WebClient).DownloadFile($chrome_download_path,"$scriptfolder\$chrome_installer_file")
+
+    #start the installation
+    Start-Process -FilePath "msiexec.exe" -ArgumentList "/i ""$ScriptFolder\$chrome_installer_file"" /qn /norestart" -Wait -WindowStyle Hidden
+    Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$chrome_installer_file"
+
 }
 function install_discord {
-    Write-Host "Discord installation startet ..."   
+    Write-Host "Discord installation startet ..."  
+    
+    #set variables
+    $discord_installer_file = "discord.exe"
+    $discord_download_path = "https://discord.com/api/downloads/distributions/app/installers/latest?channel=stable&platform=win&arch=x86"
+
+    #downloading the newest discord version
+    (New-Object System.Net.WebClient).DownloadFile($discord_download_path,"$scriptfolder\$discord_installer_file")
+    
+    #installing the newest discord version
+    Start-Process -FilePath "$scriptfolder\$discord_installer_file" -ArgumentList "-s" -Wait -WindowStyle Hidden
+    Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$discord_installer_file"
 }
 function install_epicgames {
     Write-Host "Epic Games installation startet ..."
+
+    #set variables
+    $epic_installer_file = "epic.msi"
+    $epic_download_path = "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi"
+
+    #downloading the newest discord version
+    (New-Object System.Net.WebClient).DownloadFile($epic_download_path,"$scriptfolder\$epic_installer_file")
+    
+    #installing the newest discord version
+    Start-Process -FilePath "msiexec.exe" -ArgumentList "/i ""$ScriptFolder\$epic_installer_file"" /qn /norestart" -Wait -WindowStyle Hidden
+    Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$epic_installer_file"
 }
 function install_firefox {
     Write-Host "Mozilla Firefox installation startet ..."
+    $firefox_download_path = "https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=de"
+    $firefox_installer_file = "Firefox.exe"
+
+    #download the newest firefox installer
+    (New-Object System.Net.WebClient).DownloadFile($firefox_download_path,"$scriptfolder\$firefox_installer_file")
+
+    #start installation of firefox
+    Start-Process -FilePath "$scriptfolder\$firefox_installer_file" -ArgumentList "-ms" -Wait -WindowStyle Hidden
+    Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$firefox_installer_file"
 }
 function install_libreoffice {
     Write-Host "LibreOffice installation startet ..."
+
+    #set links for libreofficedownload
+    $libreoffice_version_url = "https://npackd.appspot.com/p/libreoffice64"
+    $libreoffice_newest_version = ((((((Invoke-RestMethod -Uri $libreoffice_version_url) -split "Versions:")[1] -split "</div>")[0] -split "</a>")[0] -split "<a href=`"/p/libreoffice64/")[1] -split "`">")[0]
+
+    $dl_newversion_url = $libreoffice_version_url + "/" + $libreoffice_newest_version
+    $libreoffice_download_path = ((((Invoke-RestMethod -Uri $dl_newversion_url) -split "Download:")[1] -split "`"")[1] -split "`"")[0]
+    $libreoffice_installer_file = ($libreoffice_download_path -split "/")[-1]
+
+    #start download of the newest libreoffice version
+    (New-Object System.Net.WebClient).DownloadFile($libreoffice_download_path,"$scriptfolder\$libreoffice_installer_file")
+
+    #start the installation
+    Start-Process -FilePath "msiexec.exe" -ArgumentList "/i ""$ScriptFolder\$libreoffice_installer_file"" /qn /norestart" -Wait -WindowStyle Hidden
+    Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$libreoffice_installer_file"
 }
 function install_npp {
     Write-Host "Notepad++ installation startet ..."
@@ -310,11 +390,25 @@ function install_npp {
     (New-Object System.Net.WebClient).DownloadFile($npp_download_path,"$scriptfolder\$npp_installer_file")
 
     #start installation for npp
-    #Start-Process -FilePath "$scriptfolder\$npp_installer_file" -ArgumentList "-ms" -Wait -WindowStyle Hidden
+    Start-Process -FilePath "$scriptfolder\$npp_installer_file" -ArgumentList "-ms" -Wait -WindowStyle Hidden
     Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$npp_installer_file"
 }
 function install_steam {
     Write-Host "Steam installation startet ..."
+
+    #set variables
+    $steam_installer_file = "steam.exe"
+    $steam_download_path = "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe"
+
+    #downloading the newest discord version
+    (New-Object System.Net.WebClient).DownloadFile($steam_download_path,"$scriptfolder\$steam_installer_file")
+
+    #installing the newest discord version
+    Start-Process -FilePath "$scriptfolder\$steam_installer_file" -ArgumentList "/s" -Wait -WindowStyle Hidden
+    Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$steam_installer_file"
+
 }
 function install_thunderbird {
     Write-Host "Thunderbird installation startet ..."
@@ -327,14 +421,41 @@ function install_thunderbird {
     (New-Object System.Net.WebClient).DownloadFile($thunderbird_download_path,"$scriptfolder\$thunderbird_installer_file")
     
     #start installation for thunderbird
-    #Start-Process -FilePath "$scriptfolder\$thunderbird_installer_file" -ArgumentList "-ms" -Wait -WindowStyle Hidden
+    Start-Process -FilePath "$scriptfolder\$thunderbird_installer_file" -ArgumentList "-ms" -Wait -WindowStyle Hidden
     Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$thunderbird_installer_file"
 }
 function install_vlc {
     Write-Host "VLC installation startet ..."
+
+    $vlc_url = 'https://www.videolan.org/vlc/download-windows.html'
+    $vlc_page = Invoke-RestMethod -Uri $vlc_url
+    $vlc_dllink = (($vlc_page -split "`">Installer for 64bit version")[0] -split "><a href=`"//")[-1]
+    $vlc_download_path = "https://" + $vlc_dllink
+    $vlc_installer_file = ($vlc_download_path -split '/')[-1]
+
+    #download the vlc installer
+    (New-Object System.Net.WebClient).DownloadFile($vlc_download_path,"$scriptfolder\$vlc_installer_file")
+
+    #Start Installation
+    Start-Process -FilePath "$scriptfolder\$vlc_installer_file" -ArgumentList "/S" -Wait -WindowStyle Hidden
+    Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$vlc_installer_file"
 }
 function install_teamviewer {
     Write-Host "Teamviewer installation startet ..."
+
+    #set variables
+    $teamviewer_installer_file = "teamviewer.exe"
+    $teamviewer_download_path = "https://download.teamviewer.com/download/TeamViewer_Setup.exe"
+
+    #downloading the newest discord version
+    (New-Object System.Net.WebClient).DownloadFile($teamviewer_download_path,"$scriptfolder\$teamviewer_installer_file")
+
+    #installing the newest discord version
+    Start-Process -FilePath "$scriptfolder\$teamviewer_installer_file" -ArgumentList "/S" -Wait -WindowStyle Hidden
+    Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$teamviewer_installer_file"
 }
 function install_pdf24 {
     Write-Host "PDF24 installation startet ..."
@@ -350,13 +471,21 @@ function install_pdf24 {
     (New-Object System.Net.WebClient).DownloadFile($pdf24_download_path,"$scriptfolder\$pdf24_installer_file")
 
     #start installation for psf24
-    #Start-Process -FilePath "msiexec.exe" -ArgumentList "/i ""$ScriptFolder\$installer_file"" /qn /norestart" -Wait -WindowStyle Hidden
+    Start-Process -FilePath "msiexec.exe" -ArgumentList "/i ""$ScriptFolder\$pdf24_installer_file"" /qn /norestart" -Wait -WindowStyle Hidden
     Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$pdf24_installer_file"
 }
 function install_obs {
     Write-Host "OBS installation startet ..."
-}
 
+    $obs_url = "https://obsproject.com/"
+    $obs_download_path = ((((Invoke-RestMethod -Uri $obs_url) -split "download-welcome`">Windows")[0] -split "<a href=`"")[-1] -split "`"")[0]
+    $obs_installer_file = ($obs_download_path -split "/")[-1]
+    (New-Object System.Net.WebClient).DownloadFile($bs_download_path,"$scriptfolder\$obs_installer_file")
+    Start-Process -FilePath "$ScriptFolder\$obs_installer_file" -ArgumentList "/S" -Wait -WindowStyle Hidden
+    Start-Sleep -Seconds "5"
+    Remove-Item "$scriptfolder\$obs_installer_file"
+}
 
 #open window
 [void] $objForm.ShowDialog()
