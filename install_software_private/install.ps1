@@ -34,8 +34,8 @@ $line4 = "110"
 $line5 = "130"
 $line6 = "150"
 $line7 = "170"
-$line8 = "190"
-$line9 = "210"
+#$line8 = "190"
+#$line9 = "210"
 
 #set name software name size
 $name_size = "150,20"
