@@ -258,7 +258,7 @@ function start_install {
     
     # Information for the user for some products
     if ($check_battlenet.Checked -eq $true) {
-        [System.Windows.MessageBox]::Show("Battle.Net cant be installed automaticaly because Blizzard does NOT support this option.`n`nYou have to install Battel.Net manually","Information about Battle.Net","OK","Information")
+        [System.Windows.Forms.MessageBox]::Show("Battle.Net can´t be installed automaticaly because Blizzard does NOT support this option.`n`nYou have to install Battel.Net manually","Information about Battle.Net","0","Information")
     }
 
 }
@@ -288,11 +288,11 @@ function install_battlenet {
     Write-Host "Battle.Net installation startet ..."
 
     #set variables
-    $discord_installer_file = "battlenet.exe"
-    $discord_download_path = "https://eu.battle.net/download/getInstaller?os=win&installer=Battle.net-Setup.exe"
+    $battlenet_installer_file = "battlenet.exe"
+    $battlenet_download_path = "https://eu.battle.net/download/getInstaller?os=win&installer=Battle.net-Setup.exe"
 
     #downloading the newest discord version
-    (New-Object System.Net.WebClient).DownloadFile($discord_download_path,"$scriptfolder\$discord_installer_file")
+    (New-Object System.Net.WebClient).DownloadFile($battlenet_download_path,"$scriptfolder\$battlenet_installer_file")
 }
 function install_chrome {
     Write-Host "Google Crome installation startet ..."
@@ -489,4 +489,3 @@ function install_obs {
 
 #open window
 [void] $objForm.ShowDialog()
-Start-Sleep -Seconds "10"
