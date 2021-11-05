@@ -274,8 +274,8 @@ function install_7zip {
     $7zip_download_path = -join ($7zip_DLPrefix, $7zip_RelLink)
 
     #get the installer filename
-    $7zip_installer_file = ((((($7zip_page -split '7-Zip for 64-bit Windows')[1] -split '<TR>')[-1] -split 'href="')[1] -split '"')[0] -split "a/")[1]
-
+    $7zip_installer_file = ($7zip_download_path -split "/")[-1]
+    
     #download 7zip installer
     (New-Object System.Net.WebClient).DownloadFile($7zip_download_path,"$scriptfolder\$7zip_installer_file")
 
