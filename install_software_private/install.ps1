@@ -291,7 +291,7 @@ function install_battlenet {
     $battlenet_installer_file = "battlenet.exe"
     $battlenet_download_path = "https://eu.battle.net/download/getInstaller?os=win&installer=Battle.net-Setup.exe"
 
-    #downloading the newest discord version
+    #downloading the newest battle.net version
     (New-Object System.Net.WebClient).DownloadFile($battlenet_download_path,"$scriptfolder\$battlenet_installer_file")
 }
 function install_chrome {
