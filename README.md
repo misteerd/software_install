@@ -1,4 +1,4 @@
-# private
+# software_install
 These script is for installing a stock of software dircectly from the developers.
 It will download the newest version of a software and install it.
 
